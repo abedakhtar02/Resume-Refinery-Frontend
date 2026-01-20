@@ -41,7 +41,19 @@ const LoginPage = () => {
         password: formData.password,
       });
 
-      login(response.user, response.token);
+      // Handle multiple possible backend response shapes
+      const token =
+        response?.token ||
+        response?.accessToken ||
+        response?.data?.token ||
+        null;
+      const user =
+        response?.user || response?.userData || response?.data?.user || null;
+
+      // Ensure we store a truthy user so ProtectedRoute allows navigation.
+      const finalUser = user || { email: formData.email };
+
+      login(finalUser, token);
       navigate(from, { replace: true });
     } catch (err) {
       setError(
