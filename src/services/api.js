@@ -72,11 +72,11 @@ export const resumeAPI = {
     return response.data;
   },
   getHistory: async () => {
-    const response = await api.get("/resume/history");
+    const response = await api.get("/ats/history");
     return response.data;
   },
   getAnalysisById: async (id) => {
-    const response = await api.get(`/resume/analysis/${id}`);
+    const response = await api.get(`/ats/analysis/${id}`);
     return response.data;
   },
 };

@@ -89,7 +89,9 @@ const UploadPage = () => {
         targetRole,
         experienceLevel,
       );
-      navigate("/results", { state: { analysis: result.analysis } });
+      // API returns the analysis object as the top-level response (response.data)
+      // Pass it into the results page as `analysis` so ResultsPage can render it.
+      navigate("/results", { state: { analysis: result } });
     } catch (err) {
       setError(
         err.response?.data?.message || "Analysis failed. Please try again.",
