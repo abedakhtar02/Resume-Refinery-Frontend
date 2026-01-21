@@ -65,11 +65,7 @@ export const resumeAPI = {
     if (targetRole) formData.append("targetRole", targetRole);
     if (experienceLevel) formData.append("experienceLevel", experienceLevel);
 
-    const response = await api.post("/ats/analyze", formData, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    });
+    const response = await api.post("/ats/analyze", formData);
     return response.data;
   },
   getHistory: async () => {

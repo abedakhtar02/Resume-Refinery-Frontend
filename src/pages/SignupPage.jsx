@@ -53,7 +53,17 @@ const SignupPage = () => {
       });
 
       // If signup successful, log them in
-      login(response.user, response.token);
+      const token =
+        response?.token || response?.accessToken || response?.data?.token;
+
+      const user = response?.user ||
+        response?.data?.user || { email: formData.email };
+
+      if (!token) {
+        throw new Error("Token missing from signup response");
+      }
+
+      login(user, token);
       navigate("/upload");
     } catch (err) {
       setError(
