@@ -2,14 +2,11 @@ import axios from "axios";
 
 const API_BASE_URL =
   import.meta.env.VITE_API_URL ||
-  "https://resume-refinery-backend.onrender.com";
+  "https://resume-refinery-backend.onrender.com/api";
 
 // Create axios instance
 const api = axios.create({
   baseURL: API_BASE_URL,
-  headers: {
-    "Content-Type": "application/json",
-  },
 });
 
 // Add token to requests if available
