@@ -41,19 +41,14 @@ const LoginPage = () => {
         password: formData.password,
       });
 
-      // Handle multiple possible backend response shapes
-      const token =
-        response?.token ||
-        response?.accessToken ||
-        response?.data?.token ||
-        null;
-      const user =
-        response?.user || response?.userData || response?.data?.user || null;
+      const token = response?.accessToken || response?.token;
+      const user = response?.user;
 
-      // Ensure we store a truthy user so ProtectedRoute allows navigation.
-      const finalUser = user || { email: formData.email };
+      if (!token || !user) {
+        throw new Error("Invalid response from server");
+      }
 
-      login(finalUser, token);
+      login(user, token);
       navigate(from, { replace: true });
     } catch (err) {
       setError(
@@ -67,7 +62,7 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center py-12 px-4">
+    <div className="min-h-screen bg-indigo-200 flex items-center justify-center py-12 px-4">
       <div className="max-w-md w-full bg-white rounded-xl shadow-lg p-8">
         <div className="text-center mb-8">
           <div className="flex justify-center mb-4">

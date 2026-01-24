@@ -46,7 +46,7 @@ const Navigation = () => {
                 </div>
                 <button
                   onClick={handleLogout}
-                  className="text-red-600 hover:text-red-700 p-2 rounded-md"
+                  className="text-red-400 hover:text-red-600 p-2 rounded-md cursor-pointer"
                   title="Logout"
                 >
                   <LogOut className="w-4 h-4" />

@@ -70,7 +70,11 @@ export const resumeAPI = {
     return response.data;
   },
   getAnalysisById: async (id) => {
-    const response = await api.get(`/ats/analysis/${id}`);
+    const response = await api.get(`/ats/history/${id}`);
+    return response.data;
+  },
+  deleteAnalysis: async (id) => {
+    const response = await api.delete(`/ats/history/${id}`);
     return response.data;
   },
 };

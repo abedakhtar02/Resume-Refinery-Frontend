@@ -8,6 +8,7 @@ const HistoryPage = () => {
   const [history, setHistory] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [deleting, setDeleting] = useState(null);
 
   useEffect(() => {
     fetchHistory();
@@ -32,6 +33,23 @@ const HistoryPage = () => {
     } catch (err) {
       alert("Failed to load analysis");
       console.error("Analysis fetch error:", err);
+    }
+  };
+
+  const handleDeleteAnalysis = async (id) => {
+    if (window.confirm("Are you sure you want to delete this analysis?")) {
+      setDeleting(id);
+      try {
+        await resumeAPI.deleteAnalysis(id);
+        // Remove the deleted item from the history list
+        setHistory(history.filter((item) => item._id !== id));
+        alert("Analysis deleted successfully");
+      } catch (err) {
+        setError("Failed to delete analysis");
+        console.error("Delete error:", err);
+      } finally {
+        setDeleting(null);
+      }
     }
   };
 
@@ -100,12 +118,13 @@ const HistoryPage = () => {
           <div className="space-y-4">
             {history.map((item) => (
               <div
-                key={item.id}
+                key={item._id}
                 className="bg-white rounded-lg shadow-md hover:shadow-lg transition cursor-pointer"
               >
                 <div
                   className="p-6"
-                  onClick={() => handleViewAnalysis(item.id)}
+                  title="View Details"
+                  onClick={() => handleViewAnalysis(item._id)}
                 >
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-4 flex-1">
@@ -114,7 +133,7 @@ const HistoryPage = () => {
                       </div>
                       <div className="flex-1">
                         <h3 className="text-lg font-semibold text-gray-900">
-                          {item.filename || "Resume Analysis"}
+                          {item.resumeFileName || "Resume Analysis"}
                         </h3>
                         <div className="flex items-center space-x-4 mt-1">
                           <p className="text-sm text-gray-500">
@@ -127,7 +146,7 @@ const HistoryPage = () => {
                               day: "numeric",
                             })}
                           </p>
-                          {item.targetRole && (
+                          {item.targetRole || (
                             <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full">
                               {item.targetRole}
                             </span>
@@ -137,9 +156,9 @@ const HistoryPage = () => {
                     </div>
                     <div className="text-right ml-4">
                       <div
-                        className={`text-4xl font-bold ${getScoreColor(item.score)}`}
+                        className={`text-4xl font-bold ${getScoreColor(item.atsScore)}`}
                       >
-                        {item.score}
+                        {item.atsScore}
                       </div>
                       <div className="text-sm text-gray-500 mt-1">
                         Match Score
@@ -152,7 +171,7 @@ const HistoryPage = () => {
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
-                      handleViewAnalysis(item.id);
+                      handleViewAnalysis(item._id);
                     }}
                     className="text-blue-600 hover:text-blue-700 text-sm font-medium"
                   >
@@ -161,16 +180,14 @@ const HistoryPage = () => {
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
-                      if (
-                        window.confirm(
-                          "Are you sure you want to delete this analysis?",
-                        )
-                      ) {
-                        // Implement delete functionality
-                        alert("Delete functionality will be implemented");
-                      }
+                      handleDeleteAnalysis(item._id);
                     }}
-                    className="text-red-600 hover:text-red-700 p-2 rounded-md"
+                    disabled={deleting === item._id}
+                    className={`p-2 rounded-md ${
+                      deleting === item._id
+                        ? "text-gray-400 cursor-not-allowed"
+                        : "text-red-600 hover:text-red-700"
+                    }`}
                     title="Delete"
                   >
                     <Trash2 className="w-4 h-4" />
@@ -195,13 +212,13 @@ const HistoryPage = () => {
               <div
                 className={`text-3xl font-bold ${getScoreColor(
                   Math.round(
-                    history.reduce((acc, item) => acc + item.score, 0) /
+                    history.reduce((acc, item) => acc + item.atsScore, 0) /
                       history.length,
                   ),
                 )}`}
               >
                 {Math.round(
-                  history.reduce((acc, item) => acc + item.score, 0) /
+                  history.reduce((acc, item) => acc + item.atsScore, 0) /
                     history.length,
                 )}
               </div>
@@ -210,10 +227,10 @@ const HistoryPage = () => {
               <div className="text-sm text-gray-600 mb-1">Highest Score</div>
               <div
                 className={`text-3xl font-bold ${getScoreColor(
-                  Math.max(...history.map((item) => item.score)),
+                  Math.max(...history.map((item) => item.atsScore)),
                 )}`}
               >
-                {Math.max(...history.map((item) => item.score))}
+                {Math.max(...history.map((item) => item.atsScore))}
               </div>
             </div>
           </div>
