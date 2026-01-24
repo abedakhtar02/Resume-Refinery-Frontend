@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { Brain } from "lucide-react";
+import { Brain, CheckCircle } from "lucide-react";
 import { authAPI } from "../services/api";
 import { useAuth } from "../contexts/AuthContext";
 
@@ -14,8 +14,18 @@ const SignupPage = () => {
     confirmPassword: "",
   });
   const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
 
+  // Redirect to login after showing success message
+  useEffect(() => {
+    if (success) {
+      const timer = setTimeout(() => {
+        navigate("/login");
+      }, 2500); // Show message for 2.5 seconds before redirecting
+      return () => clearTimeout(timer);
+    }
+  }, [success, navigate]);
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -26,6 +36,7 @@ const SignupPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
+    setSuccess("");
 
     // Validation
     if (!formData.name || !formData.email || !formData.password) {
@@ -52,19 +63,8 @@ const SignupPage = () => {
         password: formData.password,
       });
 
-      // If signup successful, log them in
-      const token =
-        response?.token || response?.accessToken || response?.data?.token;
-
-      const user = response?.user ||
-        response?.data?.user || { email: formData.email };
-
-      if (!token) {
-        throw new Error("Token missing from signup response");
-      }
-
-      login(user, token);
-      navigate("/upload");
+      // Show success message
+      setSuccess(response?.message || "User registered successfully");
     } catch (err) {
       setError(
         err.response?.data?.message || "Signup failed. Please try again.",
@@ -89,6 +89,13 @@ const SignupPage = () => {
         {error && (
           <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-6">
             {error}
+          </div>
+        )}
+
+        {success && (
+          <div className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg mb-6 flex items-center gap-2">
+            <CheckCircle className="w-5 h-5" />
+            <span>{success}</span>
           </div>
         )}
 
