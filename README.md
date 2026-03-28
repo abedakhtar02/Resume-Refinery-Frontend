@@ -42,7 +42,7 @@ In the modern hiring landscape, **75% of resumes are rejected by ATS bots** befo
 
 | Component | Technology | Description |
 | :--- | :--- | :--- |
-| **Frontend** | React.js (v18) | Component-based UI with Hooks & Context API. |
+| **Frontend** | React.js (v19) | Component-based UI with Hooks & Context API. |
 | **Styling** | Tailwind CSS | Utility-first CSS for responsive, modern design. |
 | **Backend** | NestJS | RESTful API architecture. |
 | **Database** | MongoDB Atlas | NoSQL database for flexible user & resume data storage. |
